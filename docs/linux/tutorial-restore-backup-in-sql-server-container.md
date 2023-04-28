@@ -212,19 +212,20 @@ The backup file is now located inside the container. Before restoring the backup
    ```bash
    sudo docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd -S localhost \
       -U SA -P '<YourNewStrong!Passw0rd>' \
+      -s ';' \
       -Q 'RESTORE FILELISTONLY FROM DISK = "/var/opt/mssql/backup/wwi.bak"' \
-      | tr -s ' ' | cut -d ' ' -f 1-2
+      | tr -s ' ' | cut -d ';' -f 1-2 | tr -s ';' '\t'
    ```
 
    You should see an output similar to the following:
 
    ```output
-   LogicalName   PhysicalName
+   LogicalName          PhysicalName
    ------------------------------------------
-   WWI_Primary   D:\Data\WideWorldImporters.mdf
-   WWI_UserData   D:\Data\WideWorldImporters_UserData.ndf
-   WWI_Log   E:\Log\WideWorldImporters.ldf
-   WWI_InMemory_Data_1   D:\Data\WideWorldImporters_InMemory_Data_1
+   WWI_Primary          D:\Data\WideWorldImporters.mdf
+   WWI_UserData         D:\Data\WideWorldImporters_UserData.ndf
+   WWI_Log              E:\Log\WideWorldImporters.ldf
+   WWI_InMemory_Data_1  D:\Data\WideWorldImporters_InMemory_Data_1
    ```
 
 1. Call the **RESTORE DATABASE** command to restore the database inside the container. Specify new paths for each of the files in the previous step.
